@@ -12,7 +12,7 @@
   end
 end
 x = User.new
-x.email='dan.coughlin@gmail.com'
+x.email='dan.cou@example.com'
 x.password='12345678'
 x.password_confirmation='12345678'
 x.save!
