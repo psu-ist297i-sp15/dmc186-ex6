@@ -6,7 +6,13 @@
 
 # Ignore bundler config.
 /.bundle
-
+/.DS_STORE
+/app/.DS_STORE
+/app/assets/.DS_STORE
+/app/views/.DS_STORE
+/config/.DS_STORE
+/db/.DS_STORE
+/test/.DS_STORE
 # Ignore the default SQLite database.
 /db/*.sqlite3
 /db/*.sqlite3-journal
