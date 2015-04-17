@@ -5,17 +5,23 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+stub_roles = ["faculty", "student", "admin", "staff"]
+stub_roles.each do |r|
+  Role.create(name: r)
+end
+
 # create users
 users = [
-  { email: 'dan.bou@example.com', password: '12345678', password_confirmation: '12345678' },
-  { email: 'jen.smo@example.com', password: '12345678', password_confirmation: '12345678' },
-  { email: 'jane.doe@example.com', password: '12345678', password_confirmation: '12345678' },
+  { email: 'dan.bou@example.com', password: '12345678', password_confirmation: '12345678', user_roles: Role.where(id: [0,1,2,3]) },
+  { email: 'jen.smo@example.com', password: '12345678', password_confirmation: '12345678', user_roles: Role.where(id: [2]) },
+  { email: 'jane.doe@example.com', password: '12345678', password_confirmation: '12345678', user_roles: Role.where(id: [1]) }
 ]
 users.each do |u|
   new_user = User.new
   new_user.email = u[:email]
   new_user.password = u[:password]
   new_user.password_confirmation = u[:password_confirmation]
+  new_user.roles = u[:user_roles]
   new_user.save!
 end
 
