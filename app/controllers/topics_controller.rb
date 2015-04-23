@@ -8,6 +8,13 @@ class TopicsController < ApplicationController
     @topics = Topic.search(params[:search])
   end
 
+  def campus
+    c=Curl::Easy.perform("http://api.absecom.psu.edu/rest/facilities/hours/v2/006188?callback=")
+    #puts params[:campus_code]
+    #c.body_str
+    render :json => c.body_str 
+  end
+
   # GET /topics/1
   # GET /topics/1.json
   def show

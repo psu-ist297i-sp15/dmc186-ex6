@@ -1,11 +1,92 @@
-<h3>Search Form</h3>
-<%= form_tag topics_path, :method => 'get' do %>
-  <p>
-    <%= text_field_tag :search, params[:search] %>
-    <%= submit_tag "Search", :name => nil %>
-  </p>
-<% end %>
+<% content_for :js_inject do %>
+  <script>
+  $( document ).ready(function() {
+    $("button").on('click', get_hours); 
+  });
+  function get_hours() {
+    $.ajax({
+      url: "http://localhost:3000/hours/",
+      dataType: 'json',
+      success: function(json) {
+        tmp = json.recordSet.DATA;
+        campus_code_index = 17;
+        campus_code = 'UP';
+        hours_open_index = 5;
+        hours_close_index = 6;
+        common_name_index = 13;
+        start_day = 3;
+        end_day = 4;
 
-<% @topics.each do |topic| %>
-  <%= link_to topic.title, topic_path(topic) %><br >
+        // get the current time
+        d = new Date();
+        hours = d.getHours();
+        min = d.getMinutes();
+        day = d.getDay() + 1; // their API starts with Sunday == 1
+
+        console.log(hours + " " + min + " " + day);
+        
+        for(i=0; i < tmp.length; i++) {
+          if(tmp[i][campus_code_index] == campus_code) {
+            
+            
+            
+            // is it open today
+            if (day >= tmp[i][start_day] && day <= tmp[i][end_day]) {
+            
+              //console.log("open today");
+              //open hour = oh
+              oh = tmp[i][hours_open_index];
+              //close hour = ch
+              ch = tmp[i][hours_close_index];
+            
+              oh_24 = oh.split(" ");
+              oh_hour = parseInt(oh[0].split(":")[0]);
+
+              if( oh_24[1].startsWith('p') ) {
+                oh = oh_hour + 12;
+              }
+              else {
+                oh = oh_hour;
+              }
+
+              ch_24 = ch.split(" ");
+              ch_hour = parseInt(ch[0].split(":")[0]);
+
+              if (ch_24[1].startsWith('p')) {
+                ch = ch_hour + 12;
+              }  
+              else {
+                ch = ch_hour;
+              }
+              
+              if (hours >= oh && hours <= ch) {
+                console.log(tmp[i]);
+                console.log(tmp[i][common_name_index] + " closes today at " + tmp[i][hours_close_index]);
+                $("#menu").append(tmp[i][common_name_index] + " closes today at " + tmp[i][hours_close_index] + "<br>");
+              }
+              else {
+                console.log("CLOSED: " + tmp[i][common_name_index] + " " + tmp[i][hours_open_index] + " " + tmp[i][hours_close_index] + " " + tmp[i][start_day] + " " + tmp[i][end_day]); 
+              }
+              
+            }// closed today
+            else {
+              //console.log("closed today");
+              //console.log(tmp[i]);
+            }
+            
+          }
+        }
+        
+        
+        //console.log(json.recordCount);
+        //console.log(json.recordSet.COLUMNS);
+        //console.log(json.recordSet.DATA[0]);
+      }   
+    });
+  }
+</script>
 <% end %>
+<button>Update Display</button>
+<h3>Display Open Food</h3>
+<div id="menu">
+</div>
